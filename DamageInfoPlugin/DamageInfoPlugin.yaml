@@ -4,3 +4,4 @@ author: perchbird
 description: |-
   Configurable UI options for extra damage information. /dmginfo displays the config.
 repo_url: https://github.com/lmcintyre/DamageInfoPlugin
+dalamud_api_level: 4

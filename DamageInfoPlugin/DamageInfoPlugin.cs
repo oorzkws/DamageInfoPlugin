@@ -7,8 +7,11 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 using Dalamud;
+using Dalamud.Game.ClientState.Actors.Types;
 using Dalamud.Game.ClientState.Actors.Types.NonPlayer;
 using Dalamud.Game.ClientState.Structs;
+using Dalamud.Game.Text.SeStringHandling;
+using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
@@ -226,9 +229,9 @@ namespace DamageInfoPlugin
             };
         }
         
-        private int FindCharaPet()
+        private uint FindCharaPet()
         {
-            int charaId = GetCharacterActorId();
+            var charaId = GetCharacterActorId();
             foreach (Actor a in pi.ClientState.Actors)
             {
                 if (!(a is BattleNpc npc)) continue;
@@ -240,17 +243,17 @@ namespace DamageInfoPlugin
                     return npc.ActorId;
             }
 
-            return -1;
+            return uint.MaxValue;
         }
 
-        private int GetCharacterActorId()
+        private uint GetCharacterActorId()
         {
             if (pi.ClientState.LocalPlayer != null)
                 return pi.ClientState.LocalPlayer.ActorId;
             return 0;
         }
 
-        private string GetActorName(int id)
+        private SeString GetActorName(int id)
         {
             foreach (Actor t in pi.ClientState.Actors)
                 if (t != null)
@@ -483,8 +486,8 @@ namespace DamageInfoPlugin
 
                 if (TryGetFlyTextDamageType(val1, out DamageType dmgType, out int sourceId))
                 {
-                    int charaId = GetCharacterActorId();
-                    int petId = FindCharaPet();
+                    uint charaId = GetCharacterActorId();
+                    uint petId = FindCharaPet();
 
                     if (configuration.OutgoingColorEnabled || configuration.IncomingColorEnabled)
                     {
@@ -553,43 +556,95 @@ namespace DamageInfoPlugin
             return createFlyTextHook.Original(flyTextMgr, kind, tVal1, val2, text1, tColor, icon, tText2, unk3);
         }
 
-        private IntPtr GetNewTextPtr(int sourceId, IntPtr originalText)
+        private IntPtr GetNewTextPtr(int sourceId, IntPtr originalTextPtr)
         {
-            IntPtr ret = IntPtr.Zero;
-            string name = GetActorName(sourceId);
+            var name = GetActorName(sourceId);
+            var data = (byte*) originalTextPtr.ToPointer();
+            var bytes = new List<byte>();
+            do
+            {
+                bytes.Add(*data++);
+            } while (bytes[^1] != 0);
+            var originalText = pi.SeStringManager.Parse(bytes.ToArray());
+            
+            var newPayloads = new List<Payload>();
 
-            if (string.IsNullOrEmpty(name)) return ret;
-
-            var newText = new List<byte>();
+            if (name.Payloads.Count == 0)
+            {
+                FlyTextLog($"Found no payloads!");
+                return originalTextPtr;
+            }
             
             switch (pi.ClientState.ClientLanguage)
             {
                 case ClientLanguage.Japanese:
-                    newText.AddRange(Encoding.Default.GetBytes(name));
-                    newText.AddRange(Encoding.UTF8.GetBytes("から"));
+                    newPayloads.AddRange(name.Payloads);
+                    newPayloads.Add(new TextPayload("から"));
                     break;
                 case ClientLanguage.English:
-                    newText.AddRange(Encoding.Default.GetBytes($"from {name}"));
+                    newPayloads.Add(new TextPayload("from "));
+                    newPayloads.AddRange(name.Payloads);
                     break;
                 case ClientLanguage.German:
-                    newText.AddRange(Encoding.Default.GetBytes($"von {name}"));
+                    newPayloads.Add(new TextPayload("von "));
+                    newPayloads.AddRange(name.Payloads);
                     break;
                 case ClientLanguage.French:
-                    newText.AddRange(Encoding.Default.GetBytes($"de {name}"));
+                    newPayloads.Add(new TextPayload("de "));
+                    newPayloads.AddRange(name.Payloads);
                     break;
                 default:
-                    newText.AddRange(Encoding.Default.GetBytes($">{name}"));
+                    newPayloads.Add(new TextPayload(">"));
+                    newPayloads.AddRange(name.Payloads);
                     break;
             }
             
-            if (originalText != IntPtr.Zero)
-                newText.AddRange(Encoding.Default.GetBytes($" {Marshal.PtrToStringAnsi(originalText)}"));
+            if (originalText.Payloads.Count > 0)
+                newPayloads.AddRange(originalText.Payloads);
 
+            var newText = new List<byte>();
+            newText.AddRange(new SeString(newPayloads).Encode());
             newText.Add(0);
-            ret = Marshal.AllocHGlobal(newText.Count);
+            var ret = Marshal.AllocHGlobal(newText.Count);
             Marshal.Copy(newText.ToArray(), 0, ret, newText.Count);
 
             return ret;
+
+            // var ret = IntPtr.Zero;
+            // SeString name = GetActorName(sourceId);
+            //
+            // if (string.IsNullOrEmpty(name)) return ret;
+            //
+            // var newText = new List<byte>();
+            //
+            // switch (pi.ClientState.ClientLanguage)
+            // {
+            //     case ClientLanguage.Japanese:
+            //         newText.AddRange(Encoding.Default.GetBytes(name));
+            //         newText.AddRange(Encoding.UTF8.GetBytes("から"));
+            //         break;
+            //     case ClientLanguage.English:
+            //         newText.AddRange(Encoding.Default.GetBytes($"from {name}"));
+            //         break;
+            //     case ClientLanguage.German:
+            //         newText.AddRange(Encoding.Default.GetBytes($"von {name}"));
+            //         break;
+            //     case ClientLanguage.French:
+            //         newText.AddRange(Encoding.Default.GetBytes($"de {name}"));
+            //         break;
+            //     default:
+            //         newText.AddRange(Encoding.Default.GetBytes($">{name}"));
+            //         break;
+            // }
+            //
+            // if (originalText != IntPtr.Zero)
+            //     newText.AddRange(Encoding.Default.GetBytes($" {Marshal.PtrToStringAnsi(originalText)}"));
+            //
+            // newText.Add(0);
+            // ret = Marshal.AllocHGlobal(newText.Count);
+            // Marshal.Copy(newText.ToArray(), 0, ret, newText.Count);
+            //
+            // return ret;
         }
 
         private delegate void ReceiveActionEffectDelegate(int sourceId, IntPtr sourceCharacter, IntPtr pos,
@@ -698,8 +753,8 @@ namespace DamageInfoPlugin
                         EffectLog($"{entries[i]}, s: {sourceId} t: {tTarget}");
                         if (tDmg == 0) continue;
 
-                        int actId = GetCharacterActorId();
-                        int charaPet = FindCharaPet();
+                        var actId = GetCharacterActorId();
+                        var charaPet = FindCharaPet();
 
                         // if source text is enabled, we know exactly when to add it
                         if (configuration.SourceTextEnabled &&
