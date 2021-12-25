@@ -4,7 +4,7 @@
     <LangVersion>preview</LangVersion>
     <AssemblyTitle>NeonCastbarPlugin</AssemblyTitle>
     <Product>NeonCastbarPlugin</Product>
-    <Description>More noticible castbars. /neoncastbar displays the UI.</Description>
+    <Description>More noticeable castbars. /neoncastbar displays the UI.</Description>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
