@@ -7,7 +7,7 @@ namespace NeonCastbarPlugin
     class PluginUI : IDisposable
     {
         private Configuration configuration;
-        private DamageInfoPlugin damageInfoPlugin;
+        private NeonCastbarPlugin _neonCastbarPlugin;
 
 		private bool visible = false;
         public bool Visible
@@ -23,10 +23,10 @@ namespace NeonCastbarPlugin
             set => settingsVisible = value;
         }
 
-        public PluginUI(Configuration configuration, DamageInfoPlugin damageInfoPlugin)
+        public PluginUI(Configuration configuration, NeonCastbarPlugin neonCastbarPlugin)
         {
             this.configuration = configuration;
-            this.damageInfoPlugin = damageInfoPlugin;
+            this._neonCastbarPlugin = neonCastbarPlugin;
         }
 
         public void Dispose()
@@ -49,22 +49,6 @@ namespace NeonCastbarPlugin
                 // local copies of config properties
                 var castBarConfigValue = configuration.MainTargetCastBarColorEnabled;
 	            var ftCastBarConfigValue = configuration.FocusTargetCastBarColorEnabled;
-
-	            if (ImGui.CollapsingHeader("Damage type information"))
-	            {
-		            ImGui.TextWrapped(
-			        "Each attack in the game has a specific damage type, such as blunt, piercing, magic, " +
-			        "limit break, \"breath\", and more. The only important damage types for mitigation are " +
-			        "physical (encompassing slashing, blunt, and piercing), magic, and breath (referred to the " +
-			        "community as \"darkness\" damage).");
-		            ImGui.TextWrapped(
-			        "Physical damage can be mitigated by reducing an enemy's strength stat, or with moves " +
-			        "that specifically mention physical damage reduction. Magic damage can be mitigated by " +
-			        "reducing an enemy's intelligence stat, or with moves that specifically mention magic damage " +
-			        "reduction. Darkness damage cannot be mitigated by reducing an enemy's stats or mitigating " +
-			        "against physical or magic damage - only moves that \"reduce a target's damage dealt\" will " +
-			        "affect darkness damage.");
-	            }
 
 	            if (ImGui.CollapsingHeader("Castbars"))
 	            {

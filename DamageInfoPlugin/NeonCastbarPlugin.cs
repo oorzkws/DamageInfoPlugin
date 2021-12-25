@@ -14,7 +14,7 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace NeonCastbarPlugin
 {
-    public unsafe class DamageInfoPlugin : IDalamudPlugin
+    public unsafe class NeonCastbarPlugin : IDalamudPlugin
     {
         // when a flytext 
         private const int CleanupInterval = 10000;
@@ -30,7 +30,7 @@ namespace NeonCastbarPlugin
 
         public string Name => "Damage Info";
 
-        private const string CommandName = "/dmginfo";
+        private const string CommandName = "/neoncastbar";
 
         private Configuration configuration;
         private PluginUI ui;
@@ -46,7 +46,7 @@ namespace NeonCastbarPlugin
         private CastbarInfo _nullCastbarInfo;
 
 
-        public DamageInfoPlugin(
+        public NeonCastbarPlugin(
             [RequiredVersion("1.0")] GameGui gameGui,
             [RequiredVersion("1.0")] DalamudPluginInterface pi,
             [RequiredVersion("1.0")] CommandManager cmdMgr,

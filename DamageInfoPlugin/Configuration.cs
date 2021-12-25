@@ -18,7 +18,7 @@ namespace NeonCastbarPlugin
 	        get => _mainTargetCastBarColorEnabled;
 	        set
 	        {
-		        dmgPlugin?.ResetMainTargetCastBar();
+		        neonPlugin?.ResetMainTargetCastBar();
 		        _mainTargetCastBarColorEnabled = value;
 	        }
         }
@@ -27,7 +27,7 @@ namespace NeonCastbarPlugin
 	        get => _focusTargetCastBarColorEnabled;
 	        set
 	        {
-		        dmgPlugin?.ResetFocusTargetCastBar();
+		        neonPlugin?.ResetFocusTargetCastBar();
 		        _focusTargetCastBarColorEnabled = value;
 	        }
         }
@@ -36,12 +36,12 @@ namespace NeonCastbarPlugin
         private DalamudPluginInterface pluginInterface;
 
         [NonSerialized]
-        private DamageInfoPlugin dmgPlugin;
+        private NeonCastbarPlugin neonPlugin;
 
-        public void Initialize(DalamudPluginInterface pluginInterface, DamageInfoPlugin dmgPlugin)
+        public void Initialize(DalamudPluginInterface pluginInterface, NeonCastbarPlugin neonPlugin)
         {
             this.pluginInterface = pluginInterface;
-            this.dmgPlugin = dmgPlugin;
+            this.neonPlugin = neonPlugin;
         }
 
         public void Save()
