@@ -28,7 +28,7 @@ namespace NeonCastbarPlugin
         private const int FocusTargetInfoGaugeBgNodeIndex = 13;
         private const int FocusTargetInfoGaugeNodeIndex = 15;
 
-        public string Name => "Damage Info";
+        public string Name => "Neon Castbar";
 
         private const string CommandName = "/neoncastbar";
 
@@ -64,7 +64,7 @@ namespace NeonCastbarPlugin
             ui = new PluginUI(configuration, this);
 
             cmdMgr.AddHandler(CommandName, new CommandInfo(OnCommand)
-                {HelpMessage = "Display the Damage Info configuration interface."});
+                {HelpMessage = "Display the Neon Castbar configuration interface."});
 
             _nullCastbarInfo = new CastbarInfo {unitBase = null, gauge = null, bg = null};
 

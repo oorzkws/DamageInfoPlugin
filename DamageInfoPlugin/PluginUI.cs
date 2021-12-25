@@ -44,7 +44,7 @@ namespace NeonCastbarPlugin
 	        if (!SettingsVisible) return;
 
             ImGui.SetNextWindowSize(new Vector2(400, 500), ImGuiCond.FirstUseEver);
-            if (ImGui.Begin("Damage Info Config", ref settingsVisible, ImGuiWindowFlags.AlwaysVerticalScrollbar)) {
+            if (ImGui.Begin("Neon Castbar Config", ref settingsVisible, ImGuiWindowFlags.AlwaysVerticalScrollbar)) {
 
                 // local copies of config properties
                 var castBarConfigValue = configuration.MainTargetCastBarColorEnabled;

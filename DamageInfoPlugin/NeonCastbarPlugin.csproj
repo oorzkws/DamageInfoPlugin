@@ -2,9 +2,9 @@
   <PropertyGroup>
     <TargetFramework>net5.0-windows</TargetFramework>
     <LangVersion>preview</LangVersion>
-    <AssemblyTitle>DamageInfoPlugin</AssemblyTitle>
-    <Product>DamageInfoPlugin</Product>
-    <Description>Configurable UI options for damage. /dmginfo displays the UI.</Description>
+    <AssemblyTitle>NeonCastbarPlugin</AssemblyTitle>
+    <Product>NeonCastbarPlugin</Product>
+    <Description>More noticible castbars. /neoncastbar displays the UI.</Description>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
