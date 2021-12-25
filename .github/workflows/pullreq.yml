@@ -4,9 +4,9 @@ on:
   workflow_dispatch: 
 
 env:
-  PERSONAL_PLUGIN_REPO: lmcintyre/DalamudPlugins
-  INTERNAL_NAME: DamageInfoPlugin
-  GITHUB_TOKEN: ${{ secrets.PAT }}
+  PERSONAL_PLUGIN_REPO: oorzkws/DalamudPlugins
+  INTERNAL_NAME: NeonCastbarPlugin
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   deploy:
@@ -21,11 +21,13 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: ${{ env.PERSONAL_PLUGIN_REPO }}
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Sync fork and set branch
+        with:
+          repository: ${{ env.PERSONAL_PLUGIN_REPO }}
+          token: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git remote add upstream https://github.com/goatcorp/DalamudPlugins
-          git pull upstream master
+          git pull
           git push
           git checkout -b ${{ env.INTERNAL_NAME }}${{ steps.getrel.outputs.release }}
       - name: Download artifact
