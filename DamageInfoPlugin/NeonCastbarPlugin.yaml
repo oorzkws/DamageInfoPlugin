@@ -1,6 +1,6 @@
 ﻿name: Neon Castbar
 internal_name: NeonCastbarPlugin
-author: perchbird / fork:mootykins
+author: perchbird, forked by mootykins
 punchline: Modifies target castbars to be more noticible
 description: Modifies target/focus target castbars to be a gradient based on how close the cast is to completing
 repo_url: https://github.com/oorzkws/DamageInfoPlugin
