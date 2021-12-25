@@ -10,7 +10,7 @@ namespace NeonCastbarPlugin
     {
         public int Version { get; set; } = 0;
 
-        private bool _mainTargetCastBarColorEnabled = false;
+        private bool _mainTargetCastBarColorEnabled = true;
         private bool _focusTargetCastBarColorEnabled = false;
 
         public bool MainTargetCastBarColorEnabled
