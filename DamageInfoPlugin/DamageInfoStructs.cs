@@ -1,7 +1,7 @@
 ﻿using System;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
-namespace DamageInfoPlugin
+namespace NeonCastbarPlugin
 {
     public unsafe struct CastbarInfo
     {

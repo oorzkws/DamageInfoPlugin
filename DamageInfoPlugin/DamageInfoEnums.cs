@@ -1,4 +1,4 @@
-﻿namespace DamageInfoPlugin
+﻿namespace NeonCastbarPlugin
 {
     public enum ActionEffectType : byte
     {
