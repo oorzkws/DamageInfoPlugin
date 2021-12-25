@@ -31,4 +31,4 @@ jobs:
         uses: actions/upload-artifact@v2.2.1
         with:
           path: |
-            ./DamageInfoPlugin/bin/Release/DamageInfoPlugin/*
+            ./DamageInfoPlugin/bin/Release/NeonCastbarPlugin/*
