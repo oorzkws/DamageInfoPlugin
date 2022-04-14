@@ -39,8 +39,8 @@ namespace NeonCastbarPlugin
 
         public void Initialize(DalamudPluginInterface pluginInterface, NeonCastbarPlugin neonPlugin)
         {
-            this._pluginInterface = pluginInterface;
-            this._neonPlugin = neonPlugin;
+            _pluginInterface = pluginInterface;
+            _neonPlugin = neonPlugin;
         }
 
         public void Save()

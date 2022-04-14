@@ -51,10 +51,10 @@ namespace NeonCastbarPlugin
             [RequiredVersion("1.0")] TargetManager targetManager,
             [RequiredVersion("1.0")] SigScanner scanner)
         {
-            this._gameGui = gameGui;
-            this._pi = pi;
-            this._cmdMgr = cmdMgr;
-            this._targetManager = targetManager;
+            _gameGui = gameGui;
+            _pi = pi;
+            _cmdMgr = cmdMgr;
+            _targetManager = targetManager;
 
             _configuration = pi.GetPluginConfig() as Configuration ?? new Configuration();
             _configuration.Initialize(pi, this);
@@ -67,11 +67,11 @@ namespace NeonCastbarPlugin
 
             try
             {
-                IntPtr setCastBarFuncPtr = scanner.ScanText(
+                var setCastBarFuncPtr = scanner.ScanText(
                     "48 89 5C 24 ?? 48 89 6C 24 ?? 56 48 83 EC 20 80 7C 24 ?? ?? 49 8B D9 49 8B E8 48 8B F2 74 22 49 8B 09 66 41 C7 41 ?? ?? ?? E8 ?? ?? ?? ?? 66 83 F8 69 75 0D 48 8B 0B BA ?? ?? ?? ?? E8 ?? ?? ?? ??");
                 _setCastBarHook = new Hook<SetCastBarDelegate>(setCastBarFuncPtr, (SetCastBarDelegate) SetCastBarDetour);
                 
-                IntPtr setFocusTargetCastBarFuncPtr = scanner.ScanText("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 48 83 EC 20 41 0F B6 F9 49 8B E8 48 8B F2 48 8B D9");
+                var setFocusTargetCastBarFuncPtr = scanner.ScanText("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 48 83 EC 20 41 0F B6 F9 49 8B E8 48 8B F2 48 8B D9");
                 _setFocusTargetCastBarHook = new Hook<SetCastBarDelegate>(setFocusTargetCastBarFuncPtr, (SetCastBarDelegate) SetFocusTargetCastBarDetour);
             }
             catch (Exception ex)
@@ -106,6 +106,7 @@ namespace NeonCastbarPlugin
 
             _ui.Dispose();
             _cmdMgr.RemoveHandler(CommandName);
+            GC.SuppressFinalize(this);
         }
 
         private void OnCommand(string command, string args)
@@ -141,7 +142,7 @@ namespace NeonCastbarPlugin
 
         private CastbarInfo GetTargetInfoSplitUiElements()
         {
-            AtkUnitBase* unitbase = (AtkUnitBase*) _gameGui.GetAddonByName("_TargetInfoCastBar", 1).ToPointer();
+            var unitbase = (AtkUnitBase*) _gameGui.GetAddonByName("_TargetInfoCastBar", 1).ToPointer();
             
             if (unitbase == null) return _nullCastbarInfo;
             
@@ -155,7 +156,7 @@ namespace NeonCastbarPlugin
         
         private CastbarInfo GetFocusTargetUiElements()
         {
-            AtkUnitBase* unitbase = (AtkUnitBase*) _gameGui.GetAddonByName("_FocusTargetInfo", 1).ToPointer();
+            var unitbase = (AtkUnitBase*) _gameGui.GetAddonByName("_FocusTargetInfo", 1).ToPointer();
             
             if (unitbase == null) return _nullCastbarInfo;
             
@@ -185,36 +186,32 @@ namespace NeonCastbarPlugin
                 targetInfo.Bg->AtkResNode.Color.A = 0xFF;
             }
 
-            if (splitInfo.UnitBase != null && splitInfo.Gauge != null && splitInfo.Bg != null)
-            {
-                splitInfo.Gauge->AtkResNode.Color.R = 0xFF;
-                splitInfo.Gauge->AtkResNode.Color.G = 0xFF;
-                splitInfo.Gauge->AtkResNode.Color.B = 0xFF;
-                splitInfo.Gauge->AtkResNode.Color.A = 0xFF;
+            if (splitInfo.UnitBase == null || splitInfo.Gauge == null || splitInfo.Bg == null) return;
+            splitInfo.Gauge->AtkResNode.Color.R = 0xFF;
+            splitInfo.Gauge->AtkResNode.Color.G = 0xFF;
+            splitInfo.Gauge->AtkResNode.Color.B = 0xFF;
+            splitInfo.Gauge->AtkResNode.Color.A = 0xFF;
                 
-                splitInfo.Bg->AtkResNode.Color.R = 0xFF;
-                splitInfo.Bg->AtkResNode.Color.G = 0xFF;
-                splitInfo.Bg->AtkResNode.Color.B = 0xFF;
-                splitInfo.Bg->AtkResNode.Color.A = 0xFF;
-            }
+            splitInfo.Bg->AtkResNode.Color.R = 0xFF;
+            splitInfo.Bg->AtkResNode.Color.G = 0xFF;
+            splitInfo.Bg->AtkResNode.Color.B = 0xFF;
+            splitInfo.Bg->AtkResNode.Color.A = 0xFF;
         }
 
         public void ResetFocusTargetCastBar()
         {
             var ftInfo = GetFocusTargetUiElements();
 
-            if (ftInfo.UnitBase != null && ftInfo.Gauge != null && ftInfo.Bg != null)
-            {
-                ftInfo.Gauge->AtkResNode.Color.R = 0xFF;
-                ftInfo.Gauge->AtkResNode.Color.G = 0xFF;
-                ftInfo.Gauge->AtkResNode.Color.B = 0xFF;
-                ftInfo.Gauge->AtkResNode.Color.A = 0xFF;
+            if (ftInfo.UnitBase == null || ftInfo.Gauge == null || ftInfo.Bg == null) return;
+            ftInfo.Gauge->AtkResNode.Color.R = 0xFF;
+            ftInfo.Gauge->AtkResNode.Color.G = 0xFF;
+            ftInfo.Gauge->AtkResNode.Color.B = 0xFF;
+            ftInfo.Gauge->AtkResNode.Color.A = 0xFF;
                 
-                ftInfo.Bg->AtkResNode.Color.R = 0xFF;
-                ftInfo.Bg->AtkResNode.Color.G = 0xFF;
-                ftInfo.Bg->AtkResNode.Color.B = 0xFF;
-                ftInfo.Bg->AtkResNode.Color.A = 0xFF;
-            }
+            ftInfo.Bg->AtkResNode.Color.R = 0xFF;
+            ftInfo.Bg->AtkResNode.Color.G = 0xFF;
+            ftInfo.Bg->AtkResNode.Color.B = 0xFF;
+            ftInfo.Bg->AtkResNode.Color.A = 0xFF;
         }
 
         private delegate void SetCastBarDelegate(IntPtr thisPtr, IntPtr a2, IntPtr a3, IntPtr a4, char a5);
@@ -230,8 +227,8 @@ namespace NeonCastbarPlugin
             var targetInfo = GetTargetInfoUiElements();
             var splitInfo = GetTargetInfoSplitUiElements();
 
-            bool combinedInvalid = targetInfo.UnitBase == null || targetInfo.Gauge == null || targetInfo.Bg == null;
-            bool splitInvalid = splitInfo.UnitBase == null || splitInfo.Gauge == null || splitInfo.Bg == null;
+            var combinedInvalid = targetInfo.UnitBase == null || targetInfo.Gauge == null || targetInfo.Bg == null;
+            var splitInvalid = splitInfo.UnitBase == null || splitInfo.Gauge == null || splitInfo.Bg == null;
             
             if (combinedInvalid && splitInvalid)
             {
@@ -261,16 +258,14 @@ namespace NeonCastbarPlugin
             
             var ftInfo = GetFocusTargetUiElements();
             
-            bool focusTargetInvalid = ftInfo.UnitBase == null || ftInfo.Gauge == null || ftInfo.Bg == null; 
-            
-            if (thisPtr.ToPointer() == ftInfo.UnitBase && !focusTargetInvalid)
-            {
-                GameObject focusTarget = _targetManager.FocusTarget;
-                ColorCastBar(focusTarget, ftInfo, _setFocusTargetCastBarHook, thisPtr, a2, a3, a4, a5);
-            }
+            var focusTargetInvalid = ftInfo.UnitBase == null || ftInfo.Gauge == null || ftInfo.Bg == null;
+
+            if (thisPtr.ToPointer() != ftInfo.UnitBase || focusTargetInvalid) return;
+            var focusTarget = _targetManager.FocusTarget;
+            ColorCastBar(focusTarget, ftInfo, _setFocusTargetCastBarHook, thisPtr, a2, a3, a4, a5);
         }
         
-        private void ColorCastBar(GameObject target, CastbarInfo info, Hook<SetCastBarDelegate> hook,
+        private static void ColorCastBar(GameObject target, CastbarInfo info, Hook<SetCastBarDelegate> hook,
             IntPtr thisPtr, IntPtr a2, IntPtr a3, IntPtr a4, char a5)
         {
             if (target == null)

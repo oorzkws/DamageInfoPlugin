@@ -5,7 +5,7 @@ using System.Numerics;
 namespace NeonCastbarPlugin
 {
     // ReSharper disable once InconsistentNaming
-    class PluginUI : IDisposable
+    internal class PluginUI : IDisposable
     {
         private readonly Configuration _configuration;
         private NeonCastbarPlugin _neonCastbarPlugin;
@@ -21,8 +21,8 @@ namespace NeonCastbarPlugin
 
         public PluginUI(Configuration configuration, NeonCastbarPlugin neonCastbarPlugin)
         {
-            this._configuration = configuration;
-            this._neonCastbarPlugin = neonCastbarPlugin;
+            _configuration = configuration;
+            _neonCastbarPlugin = neonCastbarPlugin;
         }
 
         public void Dispose()
