@@ -4,29 +4,25 @@ using System.Numerics;
 
 namespace NeonCastbarPlugin
 {
+    // ReSharper disable once InconsistentNaming
     class PluginUI : IDisposable
     {
-        private Configuration configuration;
-        private NeonCastbarPlugin neonCastbarPlugin;
+        private readonly Configuration _configuration;
+        private NeonCastbarPlugin _neonCastbarPlugin;
 
-		private bool visible = false;
-        public bool Visible
-        {
-            get => visible;
-            set => visible = value;
-        }
+        public bool Visible { get; set; } = false;
 
-        private bool settingsVisible = false;
+        private bool _settingsVisible;
         public bool SettingsVisible
         {
-            get => settingsVisible;
-            set => settingsVisible = value;
+            get => _settingsVisible;
+            set => _settingsVisible = value;
         }
 
         public PluginUI(Configuration configuration, NeonCastbarPlugin neonCastbarPlugin)
         {
-            this.configuration = configuration;
-            this.neonCastbarPlugin = neonCastbarPlugin;
+            this._configuration = configuration;
+            this._neonCastbarPlugin = neonCastbarPlugin;
         }
 
         public void Dispose()
@@ -44,25 +40,25 @@ namespace NeonCastbarPlugin
 	        if (!SettingsVisible) return;
 
             ImGui.SetNextWindowSize(new Vector2(250, 150), ImGuiCond.FirstUseEver);
-            if (ImGui.Begin("Neon Castbar Config", ref settingsVisible, ImGuiWindowFlags.AlwaysAutoResize))
+            if (ImGui.Begin("Neon Castbar Config", ref _settingsVisible, ImGuiWindowFlags.AlwaysAutoResize))
             {
                 // local copies of config properties
-                var castBarConfigValue = configuration.MainTargetCastBarColorEnabled;
-                var ftCastBarConfigValue = configuration.FocusTargetCastBarColorEnabled;
+                var castBarConfigValue = _configuration.MainTargetCastBarColorEnabled;
+                var ftCastBarConfigValue = _configuration.FocusTargetCastBarColorEnabled;
                 ImGui.Text("Target Castbar");
                 ImGui.SameLine();
                 if (ImGui.Checkbox("##maintargetcheck", ref castBarConfigValue))
                 {
-                    configuration.MainTargetCastBarColorEnabled = castBarConfigValue;
-                    configuration.Save();
+                    _configuration.MainTargetCastBarColorEnabled = castBarConfigValue;
+                    _configuration.Save();
                 }
 
                 ImGui.Text("Focus Target Castbar");
                 ImGui.SameLine();
                 if (ImGui.Checkbox("##focustargetcheck", ref ftCastBarConfigValue))
                 {
-                    configuration.FocusTargetCastBarColorEnabled = ftCastBarConfigValue;
-                    configuration.Save();
+                    _configuration.FocusTargetCastBarColorEnabled = ftCastBarConfigValue;
+                    _configuration.Save();
                 }
             }
 

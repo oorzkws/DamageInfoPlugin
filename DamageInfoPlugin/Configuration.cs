@@ -1,7 +1,6 @@
 using Dalamud.Configuration;
 using Dalamud.Plugin;
 using System;
-using System.Numerics;
 
 namespace NeonCastbarPlugin
 {
@@ -11,14 +10,14 @@ namespace NeonCastbarPlugin
         public int Version { get; set; } = 0;
 
         private bool _mainTargetCastBarColorEnabled = true;
-        private bool _focusTargetCastBarColorEnabled = false;
+        private bool _focusTargetCastBarColorEnabled;
 
         public bool MainTargetCastBarColorEnabled
         {
 	        get => _mainTargetCastBarColorEnabled;
 	        set
 	        {
-		        neonPlugin?.ResetMainTargetCastBar();
+		        _neonPlugin?.ResetMainTargetCastBar();
 		        _mainTargetCastBarColorEnabled = value;
 	        }
         }
@@ -27,26 +26,26 @@ namespace NeonCastbarPlugin
 	        get => _focusTargetCastBarColorEnabled;
 	        set
 	        {
-		        neonPlugin?.ResetFocusTargetCastBar();
+		        _neonPlugin?.ResetFocusTargetCastBar();
 		        _focusTargetCastBarColorEnabled = value;
 	        }
         }
 
         [NonSerialized]
-        private DalamudPluginInterface pluginInterface;
+        private DalamudPluginInterface _pluginInterface;
 
         [NonSerialized]
-        private NeonCastbarPlugin neonPlugin;
+        private NeonCastbarPlugin _neonPlugin;
 
         public void Initialize(DalamudPluginInterface pluginInterface, NeonCastbarPlugin neonPlugin)
         {
-            this.pluginInterface = pluginInterface;
-            this.neonPlugin = neonPlugin;
+            this._pluginInterface = pluginInterface;
+            this._neonPlugin = neonPlugin;
         }
 
         public void Save()
         {
-            pluginInterface.SavePluginConfig(this);
+            _pluginInterface.SavePluginConfig(this);
         }
     }
 }
