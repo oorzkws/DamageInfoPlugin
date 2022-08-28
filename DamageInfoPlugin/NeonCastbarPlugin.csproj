@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <LangVersion>preview</LangVersion>
     <AssemblyTitle>NeonCastbarPlugin</AssemblyTitle>
     <Product>NeonCastbarPlugin</Product>
@@ -49,6 +49,6 @@
     <Content Include="NeonCastbarPlugin.yaml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DalamudPackager" Version="2.1.6" />
+    <PackageReference Include="DalamudPackager" Version="2.1.8" />
   </ItemGroup>
 </Project>
