@@ -69,10 +69,10 @@ namespace NeonCastbarPlugin
             {
                 var setCastBarFuncPtr = scanner.ScanText(
                     "E8 ?? ?? ?? ?? 4C 8D 8F ?? ?? ?? ?? 4D 8B C6");
-                _setCastBarHook = new Hook<SetCastBarDelegate>(setCastBarFuncPtr, (SetCastBarDelegate) SetCastBarDetour);
+                _setCastBarHook = Hook<SetCastBarDelegate>.FromAddress(setCastBarFuncPtr, SetCastBarDetour);
                 
                 var setFocusTargetCastBarFuncPtr = scanner.ScanText("E8 ?? ?? ?? ?? 49 8B 47 20 4C 8B 6C 24");
-                _setFocusTargetCastBarHook = new Hook<SetCastBarDelegate>(setFocusTargetCastBarFuncPtr, (SetCastBarDelegate) SetFocusTargetCastBarDetour);
+                _setFocusTargetCastBarHook = Hook<SetCastBarDelegate>.FromAddress(setFocusTargetCastBarFuncPtr, SetFocusTargetCastBarDetour);
             }
             catch (Exception ex)
             {
@@ -128,7 +128,7 @@ namespace NeonCastbarPlugin
         
         private CastbarInfo GetTargetInfoUiElements()
         {
-            var unitbase = (AtkUnitBase*) _gameGui.GetAddonByName("_TargetInfo", 1).ToPointer();
+            var unitbase = (AtkUnitBase*) _gameGui.GetAddonByName("_TargetInfo").ToPointer();
 
             if (unitbase == null) return _nullCastbarInfo;
             
@@ -142,7 +142,7 @@ namespace NeonCastbarPlugin
 
         private CastbarInfo GetTargetInfoSplitUiElements()
         {
-            var unitbase = (AtkUnitBase*) _gameGui.GetAddonByName("_TargetInfoCastBar", 1).ToPointer();
+            var unitbase = (AtkUnitBase*) _gameGui.GetAddonByName("_TargetInfoCastBar").ToPointer();
             
             if (unitbase == null) return _nullCastbarInfo;
             
@@ -156,7 +156,7 @@ namespace NeonCastbarPlugin
         
         private CastbarInfo GetFocusTargetUiElements()
         {
-            var unitbase = (AtkUnitBase*) _gameGui.GetAddonByName("_FocusTargetInfo", 1).ToPointer();
+            var unitbase = (AtkUnitBase*) _gameGui.GetAddonByName("_FocusTargetInfo").ToPointer();
             
             if (unitbase == null) return _nullCastbarInfo;
             
