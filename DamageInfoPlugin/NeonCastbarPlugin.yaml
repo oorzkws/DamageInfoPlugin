@@ -4,3 +4,4 @@ author: perchbird, forked by mootykins
 punchline: Modifies target castbars to be more noticeable
 description: Modifies target/focus target castbars to be a gradient based on how close the cast is to completing
 repo_url: https://github.com/oorzkws/DamageInfoPlugin
+dalamud_api_level: 9

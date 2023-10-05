@@ -5,10 +5,9 @@ using System.Numerics;
 using Dalamud.Game;
 using Dalamud.Game.ClientState.Objects;
 using Dalamud.Game.ClientState.Objects.Types;
-using Dalamud.Game.Gui;
 using Dalamud.Hooking;
 using Dalamud.IoC;
-using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace NeonCastbarPlugin
@@ -33,10 +32,10 @@ namespace NeonCastbarPlugin
         private readonly Configuration _configuration;
         private readonly PluginUI _ui;
 
-        private readonly GameGui _gameGui;
+        private readonly IGameGui _gameGui;
         private DalamudPluginInterface _pi;
-        private readonly CommandManager _cmdMgr;
-        private readonly TargetManager _targetManager;
+        private readonly ICommandManager _cmdMgr;
+        private readonly ITargetManager _targetManager;
 
         private readonly Hook<SetCastBarDelegate> _setCastBarHook;
         private readonly Hook<SetCastBarDelegate> _setFocusTargetCastBarHook;
@@ -45,11 +44,13 @@ namespace NeonCastbarPlugin
 
 
         public NeonCastbarPlugin(
-            [RequiredVersion("1.0")] GameGui gameGui,
+            [RequiredVersion("1.0")] IGameGui gameGui,
             [RequiredVersion("1.0")] DalamudPluginInterface pi,
-            [RequiredVersion("1.0")] CommandManager cmdMgr,
-            [RequiredVersion("1.0")] TargetManager targetManager,
-            [RequiredVersion("1.0")] SigScanner scanner)
+            [RequiredVersion("1.0")] ICommandManager cmdMgr,
+            [RequiredVersion("1.0")] ITargetManager targetManager,
+            [RequiredVersion("1.0")] ISigScanner scanner,
+            [RequiredVersion("1.0")] IGameInteropProvider interop,
+            [RequiredVersion("1.0")] IPluginLog log)
         {
             _gameGui = gameGui;
             _pi = pi;
@@ -69,15 +70,15 @@ namespace NeonCastbarPlugin
             {
                 var setCastBarFuncPtr = scanner.ScanText(
                     "E8 ?? ?? ?? ?? 4C 8D 8F ?? ?? ?? ?? 4D 8B C6");
-                _setCastBarHook = Hook<SetCastBarDelegate>.FromAddress(setCastBarFuncPtr, SetCastBarDetour);
+                _setCastBarHook = interop.HookFromAddress<SetCastBarDelegate>(setCastBarFuncPtr, SetCastBarDetour);
                 
                 var setFocusTargetCastBarFuncPtr = scanner.ScanText("E8 ?? ?? ?? ?? 49 8B 47 20 4C 8B 6C 24");
-                _setFocusTargetCastBarHook = Hook<SetCastBarDelegate>.FromAddress(setFocusTargetCastBarFuncPtr, SetFocusTargetCastBarDetour);
+                _setFocusTargetCastBarHook = interop.HookFromAddress<SetCastBarDelegate>(setFocusTargetCastBarFuncPtr, SetFocusTargetCastBarDetour);
             }
             catch (Exception ex)
             {
-                PluginLog.Information($"Encountered an error loading NeonCastbarPlugin: {ex.Message}");
-                PluginLog.Information("Plugin will not be loaded.");
+                log.Information($"Encountered an error loading NeonCastbarPlugin: {ex.Message}");
+                log.Information("Plugin will not be loaded.");
                 
                 _setCastBarHook?.Disable();
                 _setCastBarHook?.Dispose();
